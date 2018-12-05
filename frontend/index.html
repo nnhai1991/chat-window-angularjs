@@ -6,7 +6,7 @@
 <script src="libs/bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
 <link href="libs/bootstrap-4.0.0-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 <style>
-    .chat-box{
+.chat-box{
     width:400px;
     height: 90vh;
     border: 1px solid lightgray;
@@ -17,6 +17,7 @@
     right: 10px;
     padding: 5px;
 }
+
 .current{
     position: absolute; 
     bottom: 0; 
@@ -30,26 +31,29 @@
     overflow-y: scroll;
     
 }
-.text{
-    max-width: 80%;
-    word-break: break-all;
-    
+
+img.profile-img{
+    height: 30px;
+    width: 30px;
     border-radius: 10px;
-    margin: 10px;
-    padding: 10px;
+}
+
+.text-container{
+    margin-top:10px;
 }
 .question{
+    word-break: break-all;    
+    border-radius: 10px;
     color: white;
-    margin-left: 20%;
-    text-align: right;
     width: auto;
     background: lightskyblue;
+    
 }
 
 .answer{
+    word-break: break-all;    
+    border-radius: 10px;
     color: black;
-    margin-right: 20%;
-    text-align: left;
     background: lightgray;
 }
 
@@ -59,14 +63,29 @@
 
     <div ng-app="myApp" ng-controller="myCtrl">
         <div class="chat-box">
-            <div class="history" id="history">
-                <div ng-repeat="text in history" class="text {{text.type}}">
-                        <span ng-bind-html="text.message"></span>
+            <div class="history container-fluid" id="history">
+                <div ng-repeat="text in history">
+                    <div class="row text-container" ng-if="text.type=='answer'">
+                        <div class="col-2">
+                            <img src="images/placeholder-profile.jpg" class="profile-img" />
+                        </div>
+                        <div class="col-9 {{text.type}}">
+                            <span ng-bind-html="text.message"></span>
+                        </div>
+                    </div>
+
+                    <div class="row text-container" ng-if="text.type=='question'">
+                            <div class="offset-1 col-9 {{text.type}}">
+                                <span ng-bind-html="text.message"></span>
+                            </div>
+                            <div class="col-2">
+                                    <img src="images/placeholder-profile.jpg" class="profile-img" />
+                            </div>
+                        </div>
                 </div>
             </div>
-            <div class="current">                
-                <input class="form-control" type="text" ng-keypress="receiveKeyPress($event)" 
-                ng-model="userMessage"
+            <div class="current">
+                <input class="form-control" type="text" ng-keypress="receiveKeyPress($event)" ng-model="userMessage"
                     placeholder="What do you have in mind?" />
             </div>
         </div>
