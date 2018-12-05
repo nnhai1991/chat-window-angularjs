@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <script src="libs/angularjs/angular.min.js"></script>
+<script src="libs/angularjs/angular-sanitize.min.js"></script>
 <script src="libs/jquery/jquery-3.3.1.js"></script>
 <script src="libs/bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
 <link href="libs/bootstrap-4.0.0-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -60,7 +61,7 @@
         <div class="chat-box">
             <div class="history" id="history">
                 <div ng-repeat="text in history" class="text {{text.type}}">
-                    <p>{{text.message}}<p>
+                        <span ng-bind-html="text.message"></span>
                 </div>
             </div>
             <div class="current">                
@@ -76,11 +77,11 @@
 <script>
     var API_URL = "http://localhost:8080/api/ask";
 
-    var app = angular.module('myApp', []);
+    var app = angular.module('myApp', ['ngSanitize']);
     app.controller('myCtrl', function ($scope, $http) {
         $scope.userMessage = "";
         $scope.history = [
-            { message: "Hello", type: "answer" }];
+            { message: "Hello<br/>How can I help?", type: "answer" }];
 
         $scope.receiveKeyPress = function (keyEvent) {
             if (keyEvent.which === 13)
