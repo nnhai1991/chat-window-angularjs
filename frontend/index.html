@@ -6,7 +6,7 @@
 <script src="libs/bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
 <link href="libs/bootstrap-4.0.0-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 <style>
-.chat-box{
+    .chat-box{
     width:400px;
     height: 90vh;
     border: 1px solid lightgray;
@@ -75,13 +75,13 @@ img.profile-img{
                     </div>
 
                     <div class="row text-container" ng-if="text.type=='question'">
-                            <div class="offset-1 col-9 {{text.type}}">
-                                <span ng-bind-html="text.message"></span>
-                            </div>
-                            <div class="col-2">
-                                    <img src="images/placeholder-profile.jpg" class="profile-img" />
-                            </div>
+                        <div class="offset-1 col-9 {{text.type}}">
+                            <span ng-bind-html="text.message"></span>
                         </div>
+                        <div class="col-2">
+                            <img src="images/placeholder-profile.jpg" class="profile-img" />
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="current">
@@ -95,12 +95,45 @@ img.profile-img{
 
 <script>
     var API_URL = "http://localhost:8080/api/ask";
+    var MORE_URL = "http://localhost:8080/api/more";
 
     var app = angular.module('myApp', ['ngSanitize']);
+
     app.controller('myCtrl', function ($scope, $http) {
+
+        var clientID = 'randomstring';
+
         $scope.userMessage = "";
         $scope.history = [
             { message: "Hello<br/>How can I help?", type: "answer" }];
+
+
+        var getMoreMessage = function () {
+            var req = {
+                method: 'POST',
+                url: MORE_URL,
+                headers: {
+                    'Content-Type': "application/json"
+                },
+                data: { "client_id": clientID }
+            }
+
+            $http(req).then(function (response) {
+                console.log(response);
+                $scope.history.push(response.data);
+
+                //scroll down
+                setTimeout(function () {
+                    var objDiv = document.getElementById("history");
+                    objDiv.scrollTop = objDiv.scrollHeight;
+                }, 100);
+
+                if (response.data.continue) {
+                    getMoreMessage();
+                }
+
+            }, function (response) { console.log(response) });
+        }
 
         $scope.receiveKeyPress = function (keyEvent) {
             if (keyEvent.which === 13)
@@ -113,7 +146,7 @@ img.profile-img{
                         headers: {
                             'Content-Type': "application/json"
                         },
-                        data: { "user_message": $scope.userMessage }
+                        data: { "user_message": $scope.userMessage,"client_id": clientID }
                     }
 
                     $http(req).then(function (response) {
@@ -125,6 +158,11 @@ img.profile-img{
                             var objDiv = document.getElementById("history");
                             objDiv.scrollTop = objDiv.scrollHeight;
                         }, 100);
+
+                        if (response.data.continue) {
+                            getMoreMessage();
+                        }
+
                     }, function (response) { console.log(response) });
 
 

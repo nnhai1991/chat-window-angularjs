@@ -4,23 +4,71 @@ from flask import request
 from flask import make_response
 from flask import abort
 from flask_cors import CORS, cross_origin
+import time
 
 app = Flask(__name__)
+
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
+
+messages = {}
 
 @app.route('/api/ask', methods=['POST'])
 @cross_origin()
 def api_ask():
-    if not request.json or not 'user_message' in request.json:
+    if not request.json or not 'user_message' in request.json or not 'client_id' in request.json:
         abort(400)
+    
+    clientID = request.json['client_id']
 
-    question =  request.json['user_message'],
-    answer = {
+    question =  request.json['user_message']
+
+    messages[clientID] = []
+
+    answer1 = {
         'type':"answer",
         'question' : question,
-        'message' : "I'm a poor boy from a poor family. Easy come, easy go, will you let me go?"
+        'message' : "Please wait a while...",
+        'continue' : 1
     }
+
+    answer2 = {
+        'type':"answer",
+        'question' : question,
+        'message' : '',
+        'continue' : 0
+    }
+    #return a temp message and process later
+    messages[clientID].append(answer2)
+
+    return jsonify(answer1), 200
+
+@app.route('/api/more', methods=['POST'])
+@cross_origin()
+def api_more():
+    if not request.json or not 'client_id' in request.json:
+        abort(400)
+    
+    clientID = request.json['client_id']
+
+
+    if (clientID not in messages == 0):
+        print('queue not initialized')
+        abort(400)
+    
+    if (len(messages[clientID]) == 0):
+        print('empty queue')
+        abort(400)
+
+    answer = messages[clientID][0]
+
+    del messages[clientID][0]
+
+    #get original question question = answer['question']
+    # do processing 
+    time.sleep(1)
+    answer['message'] = "I'm a poor boy from a poor family. Easy come, easy go, will you let me go?"
+
     return jsonify(answer), 200
 
 @app.errorhandler(404)
