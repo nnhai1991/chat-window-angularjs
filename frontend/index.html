@@ -123,10 +123,7 @@ img.profile-img{
                 $scope.history.push(response.data);
 
                 //scroll down
-                setTimeout(function () {
-                    var objDiv = document.getElementById("history");
-                    objDiv.scrollTop = objDiv.scrollHeight;
-                }, 100);
+                scrollDown();
 
                 if (response.data.continue) {
                     getMoreMessage();
@@ -139,14 +136,15 @@ img.profile-img{
             if (keyEvent.which === 13)
                 if ($scope.userMessage) {
                     $scope.history.push({ message: $scope.userMessage, type: "question" });
-
+                    scrollDown();
+                    
                     var req = {
                         method: 'POST',
                         url: API_URL,
                         headers: {
                             'Content-Type': "application/json"
                         },
-                        data: { "user_message": $scope.userMessage,"client_id": clientID }
+                        data: { "user_message": $scope.userMessage, "client_id": clientID }
                     }
 
                     $http(req).then(function (response) {
@@ -154,10 +152,7 @@ img.profile-img{
                         $scope.history.push(response.data);
 
                         //scroll down
-                        setTimeout(function () {
-                            var objDiv = document.getElementById("history");
-                            objDiv.scrollTop = objDiv.scrollHeight;
-                        }, 100);
+                        scrollDown();
 
                         if (response.data.continue) {
                             getMoreMessage();
@@ -170,6 +165,13 @@ img.profile-img{
                 }
         }
     });
+
+    function scrollDown() {
+        setTimeout(function () {
+            var objDiv = document.getElementById("history");
+            objDiv.scrollTop = objDiv.scrollHeight;
+        }, 100);
+    }
 
 </script>
 
