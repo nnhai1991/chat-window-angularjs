@@ -67,8 +67,8 @@ def api_more():
     return jsonify(answer), 200
 
 @app.route('/')
-def index():    
-    return redirect('/static/index.html')
+def root():
+    return app.send_static_file('index.html')
 
 @app.errorhandler(404)
 def not_found(error):

@@ -67,7 +67,7 @@ img.profile-img{
                 <div ng-repeat="text in history">
                     <div class="row text-container" ng-if="text.type=='answer'">
                         <div class="col-2">
-                            <img src="images/placeholder-profile.jpg" class="profile-img" />
+                            <img src="/static/images/placeholder-profile.jpg" class="profile-img" />
                         </div>
                         <div class="col-9 {{text.type}}">
                             <span ng-bind-html="text.message"></span>
@@ -79,7 +79,7 @@ img.profile-img{
                             <span ng-bind-html="text.message"></span>
                         </div>
                         <div class="col-2">
-                            <img src="images/placeholder-profile.jpg" class="profile-img" />
+                            <img src="/static/images/placeholder-profile.jpg" class="profile-img" />
                         </div>
                     </div>
                 </div>
