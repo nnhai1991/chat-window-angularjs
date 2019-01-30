@@ -3,19 +3,14 @@ from flask import Flask, jsonify,redirect,url_for
 from flask import request
 from flask import make_response
 from flask import abort
-from flask_cors import CORS, cross_origin
 import os
 import time
 
 app = Flask(__name__)
 
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
-
 messages = {}
 
 @app.route('/api/ask', methods=['POST'])
-@cross_origin()
 def api_ask():
     if not request.json or not 'user_message' in request.json or not 'client_id' in request.json:
         abort(400)
@@ -45,7 +40,6 @@ def api_ask():
     return jsonify(answer1), 200
 
 @app.route('/api/more', methods=['POST'])
-@cross_origin()
 def api_more():
     if not request.json or not 'client_id' in request.json:
         abort(400)
